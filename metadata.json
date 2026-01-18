@@ -1,0 +1,5 @@
+{
+  "name": "Git Flow Visualizer",
+  "description": "An interactive, animated demonstration of the Git Flow branching model. Visualize branches, commits, merges, and releases while learning standard development workflows.",
+  "requestFramePermissions": []
+}
