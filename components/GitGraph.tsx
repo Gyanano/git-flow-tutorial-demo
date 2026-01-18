@@ -4,6 +4,8 @@ import { LANES, LANE_COLORS } from '../constants';
 
 interface GitGraphProps {
   state: GitState;
+  emptyMessage: string;
+  translateCommitMessage?: (message: string) => string;
 }
 
 const SPACING_X = 60;
@@ -11,7 +13,7 @@ const SPACING_Y = 50;
 const RADIUS = 7;
 const SVG_PADDING = 40;
 
-const GitGraph: React.FC<GitGraphProps> = ({ state }) => {
+const GitGraph: React.FC<GitGraphProps> = ({ state, emptyMessage, translateCommitMessage }) => {
   // Sort commits by timestamp (oldest at top)
   const sortedCommits = useMemo(() => {
     return [...state.commits].sort((a, b) => a.timestamp - b.timestamp);
@@ -36,7 +38,7 @@ const GitGraph: React.FC<GitGraphProps> = ({ state }) => {
     <div className="w-full h-full overflow-auto bg-[#0d1117] relative flex justify-center">
       {sortedCommits.length === 0 && (
          <div className="absolute inset-0 flex items-center justify-center text-slate-500">
-            <p>Repository not initialized</p>
+            <p>{emptyMessage}</p>
          </div>
       )}
       <svg width={width} height={height} className="block">
@@ -111,6 +113,7 @@ const GitGraph: React.FC<GitGraphProps> = ({ state }) => {
           // Explicitly type 'b' as Branch to fix 'unknown' type error
           const isHead = Object.values(state.branches).some((b: Branch) => b.headCommitId === commit.id);
           const color = state.branches[commit.branchName]?.color || '#94a3b8'; // Fallback color
+          const message = translateCommitMessage ? translateCommitMessage(commit.message) : commit.message;
 
           return (
             <g key={commit.id} className="cursor-pointer hover:opacity-80 transition-opacity">
@@ -124,7 +127,7 @@ const GitGraph: React.FC<GitGraphProps> = ({ state }) => {
               />
               {/* Commit Message Tooltip-ish */}
               <text x={x + 15} y={y + 4} fill="#94a3b8" fontSize="11" fontFamily="monospace">
-                {commit.message.length > 20 ? commit.message.substring(0, 20) + '...' : commit.message}
+                {message.length > 20 ? message.substring(0, 20) + '...' : message}
               </text>
               
               {/* Tags */}
