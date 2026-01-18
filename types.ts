@@ -1,5 +1,7 @@
 export type BranchType = 'master' | 'develop' | 'feature' | 'release' | 'hotfix';
 
+export type Language = 'en' | 'zh';
+
 export interface Branch {
   name: string;
   type: BranchType;
